@@ -9,7 +9,7 @@ from starlette.responses import JSONResponse
 from starlette.status import HTTP_200_OK, HTTP_400_BAD_REQUEST
 
 from facefusion import logger
-from facefusion.asset_store import get_asset
+from facefusion.apis import asset_store
 from facefusion.filesystem import is_video
 from facefusion.video_manager import get_video_capture
 from facefusion.vision import fit_contain_frame
@@ -81,13 +81,10 @@ async def get_timeline(request: Request) -> JSONResponse:
     if asset_id and not target_path:
         from facefusion.session_context import get_session_id
 
-        asset = get_asset(asset_id)
+        session_id = get_session_id()
+        asset = asset_store.get_asset(session_id, asset_id)
         if not asset:
             return JSONResponse({'message': f'Asset not found: {asset_id}'}, status_code=HTTP_400_BAD_REQUEST)
-
-        # Verify asset belongs to current session (security)
-        if asset.get('session_id') != get_session_id():
-            return JSONResponse({'message': 'Asset not found'}, status_code=HTTP_400_BAD_REQUEST)
 
         target_path = asset.get('path')
         if not target_path:

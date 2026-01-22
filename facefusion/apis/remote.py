@@ -9,8 +9,10 @@ from starlette.requests import Request
 from starlette.responses import JSONResponse
 from starlette.status import HTTP_200_OK, HTTP_201_CREATED, HTTP_400_BAD_REQUEST, HTTP_500_INTERNAL_SERVER_ERROR
 
-from facefusion import asset_store, logger
+from facefusion import logger
+from facefusion.apis import asset_store
 from facefusion.choices import audio_formats
+from facefusion.session_context import get_session_id
 
 
 def resolve_image_urls(url : str) -> List[str]:
@@ -66,12 +68,14 @@ def download_images_from_url(url : str, asset_type : str) -> List[str]:
 			gdl_job = gallery_job.DownloadJob(url)
 			gdl_job.run()
 
+			session_id = get_session_id()
 			for root, dirs, files in os.walk(output_dir):
 				for filename in files:
 					file_path = os.path.join(root, filename)
-					asset_id = asset_store.register(asset_type, file_path, filename)
-					asset_ids.append(asset_id)
-					logger.info(f'Registered image as asset {asset_id}', __name__)
+					asset = asset_store.create_asset(session_id, asset_type, file_path)
+					if asset:
+						asset_ids.append(asset.get('id'))
+						logger.info(f'Registered image as asset {asset.get("id")}', __name__)
 
 			break
 
@@ -108,9 +112,11 @@ def download_images_from_url(url : str, asset_type : str) -> List[str]:
 				for chunk in response.iter_bytes(chunk_size = 8192):
 					f.write(chunk)
 
-		asset_id = asset_store.register(asset_type, file_path, filename)
-		asset_ids.append(asset_id)
-		logger.info(f'Downloaded and registered image as asset {asset_id}', __name__)
+		session_id = get_session_id()
+		asset = asset_store.create_asset(session_id, asset_type, file_path)
+		if asset:
+			asset_ids.append(asset.get('id'))
+			logger.info(f'Downloaded and registered image as asset {asset.get("id")}', __name__)
 
 	return asset_ids
 
@@ -138,9 +144,11 @@ def download_audio_from_url(url : str, asset_type : str) -> List[str]:
 			for chunk in response.iter_bytes(chunk_size = 8192):
 				f.write(chunk)
 
-	asset_id = asset_store.register(asset_type, file_path, filename)
-	asset_ids.append(asset_id)
-	logger.info(f'Downloaded and registered audio as asset {asset_id}', __name__)
+	session_id = get_session_id()
+	asset = asset_store.create_asset(session_id, asset_type, file_path)
+	if asset:
+		asset_ids.append(asset.get('id'))
+		logger.info(f'Downloaded and registered audio as asset {asset.get("id")}', __name__)
 
 	return asset_ids
 
@@ -352,16 +360,9 @@ async def remote(request : Request) -> JSONResponse:
 			total_frames = int(duration * fps)
 			logger.info(f'Calculated total frames: {total_frames} ({duration}s * {fps} fps)', __name__)
 
-		filename = os.path.basename(downloaded_file)
-		metadata =\
-		{
-			'frame_total': total_frames,
-			'fps': fps,
-			'resolution': (width, height) if width and height else None,
-			'duration': duration
-		}
-
-		asset_id = asset_store.register(asset_type, downloaded_file, filename, metadata)
+		session_id = get_session_id()
+		asset = asset_store.create_asset(session_id, asset_type, downloaded_file)
+		asset_id = asset.get('id') if asset else None
 		logger.info(f'Video downloaded and registered as asset {asset_id}', __name__)
 
 		response_data =\

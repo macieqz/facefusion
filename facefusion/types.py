@@ -162,6 +162,70 @@ AudioTypeSet : TypeAlias = Dict[AudioFormat, str]
 ImageTypeSet : TypeAlias = Dict[ImageFormat, str]
 VideoTypeSet : TypeAlias = Dict[VideoFormat, str]
 
+AssetId : TypeAlias = str
+AssetType = Literal['source', 'target']
+AudioMetadata = TypedDict('AudioMetadata',
+{
+	'duration' : Duration,
+	'sample_rate': int,
+	'frame_total': int,
+	'channels': int,
+	'format': str
+})
+ImageMetadata = TypedDict('ImageMetadata',
+{
+	'resolution' : Resolution
+})
+VideoMetadata = TypedDict('VideoMetadata',
+{
+	'duration' : Duration,
+	'frame_total' : int,
+	'fps' : Fps,
+	'resolution' : Resolution
+})
+AudioAsset = TypedDict('AudioAsset',
+{
+	'id' : AssetId,
+	'created_at' : datetime,
+	'expires_at' : datetime,
+	'type' : AssetType,
+	'media' : Literal['audio'],
+	'name' : str,
+	'format' : AudioFormat,
+	'size' : int,
+	'path' : str,
+	'metadata' : AudioMetadata
+})
+ImageAsset = TypedDict('ImageAsset',
+{
+	'id' : AssetId,
+	'created_at' : datetime,
+	'expires_at' : datetime,
+	'type' : AssetType,
+	'media' : Literal['image'],
+	'name' : str,
+	'format' : ImageFormat,
+	'size' : int,
+	'path' : str,
+	'metadata' : ImageMetadata
+})
+VideoAsset = TypedDict('VideoAsset',
+{
+	'id' : AssetId,
+	'created_at' : datetime,
+	'expires_at' : datetime,
+	'type' : AssetType,
+	'media' : Literal['video'],
+	'name' : str,
+	'format' : VideoFormat,
+	'size' : int,
+	'path' : str,
+	'metadata' : VideoMetadata
+})
+AssetMetadata : TypeAlias = AudioMetadata | ImageMetadata | VideoMetadata
+AssetSet : TypeAlias = Dict[AssetId, AudioAsset | ImageAsset | VideoAsset]
+AssetStore : TypeAlias = Dict[SessionId, AssetSet]
+
 AudioEncoder = Literal['flac', 'aac', 'libmp3lame', 'libopus', 'libvorbis', 'pcm_s16le', 'pcm_s32le']
 VideoEncoder = Literal['libx264', 'libx264rgb', 'libx265', 'libvpx-vp9', 'h264_nvenc', 'hevc_nvenc', 'h264_amf', 'hevc_amf', 'h264_qsv', 'hevc_qsv', 'h264_videotoolbox', 'hevc_videotoolbox', 'rawvideo']
 EncoderSet = TypedDict('EncoderSet',
