@@ -30,7 +30,7 @@ async def create_session(request : Request) -> JSONResponse:
 
 	return JSONResponse(
 	{
-		'message': translator.get('something_went_wrong', __package__)
+		'message': translator.get('something_went_wrong', 'facefusion.apis')
 	}, status_code = HTTP_401_UNAUTHORIZED)
 
 
@@ -53,7 +53,7 @@ async def get_session(request : Request) -> JSONResponse:
 
 	return JSONResponse(
 	{
-		'message': translator.get('something_went_wrong', __package__)
+		'message': translator.get('something_went_wrong', 'facefusion.apis')
 	}, status_code = HTTP_401_UNAUTHORIZED)
 
 
@@ -73,7 +73,7 @@ async def refresh_session(request : Request) -> JSONResponse:
 
 	return JSONResponse(
 	{
-		'message': translator.get('something_went_wrong', __package__)
+		'message': translator.get('something_went_wrong', 'facefusion.apis')
 	}, status_code = HTTP_401_UNAUTHORIZED)
 
 
@@ -88,12 +88,12 @@ async def destroy_session(request : Request) -> JSONResponse:
 
 			return JSONResponse(
 			{
-				'message': translator.get('ok', __package__)
+				'message': translator.get('ok', 'facefusion.apis')
 			}, status_code = HTTP_200_OK)
 
 	return JSONResponse(
 	{
-		'message': translator.get('something_went_wrong', __package__)
+		'message': translator.get('something_went_wrong', 'facefusion.apis')
 	}, status_code = HTTP_401_UNAUTHORIZED)
 
 
@@ -106,20 +106,19 @@ def create_session_guard(app : ASGIApp) -> ASGIApp:
 
 			if session_id:
 				if session_manager.validate_session(session_id):
-					from facefusion.session_context import set_session_id
-					set_session_id(session_id)
+					session_context.set_session_id(session_id)
 					return await app(scope, receive, send)
 
 				response = JSONResponse(
 				{
-					'message': translator.get('invalid_access_token', __package__)
+					'message': translator.get('invalid_access_token', 'facefusion.apis')
 				}, status_code = HTTP_426_UPGRADE_REQUIRED)
 
 				return await response(scope, receive, send)
 
 		response = JSONResponse(
 		{
-			'message': translator.get('invalid_access_token', __package__)
+			'message': translator.get('invalid_access_token', 'facefusion.apis')
 		}, status_code = HTTP_401_UNAUTHORIZED)
 
 		return await response(scope, receive, send)
