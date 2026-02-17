@@ -16,7 +16,7 @@ from facefusion.processors.modules.frame_enhancer.types import FrameEnhancerInpu
 from facefusion.processors.types import ProcessorOutputs
 from facefusion.program_helper import find_argument_group
 from facefusion.thread_helper import conditional_thread_semaphore
-from facefusion.types import ApplyStateItem, Args, DownloadScope, InferencePool, ModelOptions, ModelSet, ProcessMode, VisionFrame
+from facefusion.types import ApplyStateItem, Arguments, DownloadScope, InferencePool, ModelOptions, ModelSet, ProcessMode, VisionFrame
 from facefusion.vision import blend_frame, create_tile_frames, merge_tile_frames, read_static_image, read_static_video_frame
 
 
@@ -570,7 +570,7 @@ def get_frame_enhancer_model() -> str:
 	return frame_enhancer_model
 
 
-def register_args(program : ArgumentParser) -> None:
+def register_arguments(program : ArgumentParser) -> None:
 	group_processors = find_argument_group(program, 'processors')
 	if group_processors:
 		facefusion.argument_store.register_arguments(
@@ -594,9 +594,9 @@ def register_args(program : ArgumentParser) -> None:
 		)
 
 
-def apply_args(args : Args, apply_state_item : ApplyStateItem) -> None:
-	apply_state_item('frame_enhancer_model', args.get('frame_enhancer_model'))
-	apply_state_item('frame_enhancer_blend', args.get('frame_enhancer_blend'))
+def apply_arguments(arguments : Arguments, apply_state_item : ApplyStateItem) -> None:
+	apply_state_item('frame_enhancer_model', arguments.get('frame_enhancer_model'))
+	apply_state_item('frame_enhancer_blend', arguments.get('frame_enhancer_blend'))
 
 
 def pre_check() -> bool:

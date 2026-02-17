@@ -201,10 +201,10 @@ def test_add_step() -> None:
 
 	steps = get_steps('job-test-add-step')
 
-	assert steps[0].get('args') == args_1
-	assert steps[1].get('args') == args_2
-	assert steps[2].get('args') == args_3
-	assert steps[3].get('args') == args_4
+	assert steps[0].get('arguments') == args_1
+	assert steps[1].get('arguments') == args_2
+	assert steps[2].get('arguments') == args_3
+	assert steps[3].get('arguments') == args_4
 	assert count_step_total('job-test-add-step') == 4
 
 
@@ -242,18 +242,18 @@ def test_remix_step() -> None:
 
 	steps = get_steps('job-test-remix-step')
 
-	assert steps[0].get('args') == args_1
-	assert steps[1].get('args') == args_2
-	assert steps[2].get('args') == args_3
-	assert steps[3].get('args').get('source_path') == args_2.get('source_path')
-	assert steps[3].get('args').get('target_path') == get_step_output_path('job-test-remix-step', 0, args_1.get('output_path'))
-	assert steps[3].get('args').get('output_path') == args_2.get('output_path')
-	assert steps[4].get('args').get('source_path') == args_2.get('source_path')
-	assert steps[4].get('args').get('target_path') == get_step_output_path('job-test-remix-step', 3, args_2.get('output_path'))
-	assert steps[4].get('args').get('output_path') == args_2.get('output_path')
-	assert steps[5].get('args').get('source_path') == args_3.get('source_path')
-	assert steps[5].get('args').get('target_path') == get_step_output_path('job-test-remix-step', 2, args_3.get('output_path'))
-	assert steps[5].get('args').get('output_path') == args_3.get('output_path')
+	assert steps[0].get('arguments') == args_1
+	assert steps[1].get('arguments') == args_2
+	assert steps[2].get('arguments') == args_3
+	assert steps[3].get('arguments').get('source_path') == args_2.get('source_path')
+	assert steps[3].get('arguments').get('target_path') == get_step_output_path('job-test-remix-step', 0, args_1.get('output_path'))
+	assert steps[3].get('arguments').get('output_path') == args_2.get('output_path')
+	assert steps[4].get('arguments').get('source_path') == args_2.get('source_path')
+	assert steps[4].get('arguments').get('target_path') == get_step_output_path('job-test-remix-step', 3, args_2.get('output_path'))
+	assert steps[4].get('arguments').get('output_path') == args_2.get('output_path')
+	assert steps[5].get('arguments').get('source_path') == args_3.get('source_path')
+	assert steps[5].get('arguments').get('target_path') == get_step_output_path('job-test-remix-step', 2, args_3.get('output_path'))
+	assert steps[5].get('arguments').get('output_path') == args_3.get('output_path')
 	assert count_step_total('job-test-remix-step') == 6
 
 
@@ -296,11 +296,11 @@ def test_insert_step() -> None:
 
 	steps = get_steps('job-test-insert-step')
 
-	assert steps[0].get('args') == args_2
-	assert steps[1].get('args') == args_1
-	assert steps[2].get('args') == args_4
-	assert steps[3].get('args') == args_3
-	assert steps[4].get('args') == args_1
+	assert steps[0].get('arguments') == args_2
+	assert steps[1].get('arguments') == args_1
+	assert steps[2].get('arguments') == args_4
+	assert steps[3].get('arguments') == args_3
+	assert steps[4].get('arguments') == args_1
 	assert count_step_total('job-test-insert-step') == 5
 
 
@@ -338,8 +338,8 @@ def test_remove_step() -> None:
 
 	steps = get_steps('job-test-remove-step')
 
-	assert steps[0].get('args') == args_2
-	assert steps[1].get('args') == args_1
+	assert steps[0].get('arguments') == args_2
+	assert steps[1].get('arguments') == args_1
 	assert count_step_total('job-test-remove-step') == 2
 
 
@@ -364,8 +364,8 @@ def test_get_steps() -> None:
 	add_step('job-test-get-steps', args_2)
 	steps = get_steps('job-test-get-steps')
 
-	assert steps[0].get('args') == args_1
-	assert steps[1].get('args') == args_2
+	assert steps[0].get('arguments') == args_1
+	assert steps[1].get('arguments') == args_2
 	assert count_step_total('job-test-get-steps') == 2
 
 

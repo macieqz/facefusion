@@ -21,7 +21,7 @@ from facefusion.processors.modules.deep_swapper.types import DeepSwapperInputs, 
 from facefusion.processors.types import ProcessorOutputs
 from facefusion.program_helper import find_argument_group
 from facefusion.thread_helper import thread_semaphore
-from facefusion.types import ApplyStateItem, Args, DownloadScope, Face, InferencePool, Mask, ModelOptions, ModelSet, ProcessMode, VisionFrame
+from facefusion.types import ApplyStateItem, Arguments, DownloadScope, Face, InferencePool, Mask, ModelOptions, ModelSet, ProcessMode, VisionFrame
 from facefusion.vision import conditional_match_frame_color, read_static_image, read_static_video_frame
 
 
@@ -273,7 +273,7 @@ def get_model_size() -> Size:
 	return 0, 0
 
 
-def register_args(program : ArgumentParser) -> None:
+def register_arguments(program : ArgumentParser) -> None:
 	group_processors = find_argument_group(program, 'processors')
 	if group_processors:
 		facefusion.argument_store.register_arguments(
@@ -297,9 +297,9 @@ def register_args(program : ArgumentParser) -> None:
 		)
 
 
-def apply_args(args : Args, apply_state_item : ApplyStateItem) -> None:
-	apply_state_item('deep_swapper_model', args.get('deep_swapper_model'))
-	apply_state_item('deep_swapper_morph', args.get('deep_swapper_morph'))
+def apply_arguments(arguments : Arguments, apply_state_item : ApplyStateItem) -> None:
+	apply_state_item('deep_swapper_model', arguments.get('deep_swapper_model'))
+	apply_state_item('deep_swapper_morph', arguments.get('deep_swapper_morph'))
 
 
 def pre_check() -> bool:

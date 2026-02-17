@@ -97,7 +97,7 @@ Margin : TypeAlias = Tuple[int, int, int, int]
 Orientation = Literal['landscape', 'portrait']
 Resolution : TypeAlias = Tuple[int, int]
 
-Args : TypeAlias = Dict[str, Any]
+Arguments : TypeAlias = Dict[str, Any]
 Scope : TypeAlias = Literal['api', 'cli', 'sys']
 Choice : TypeAlias = Union[str, int, float]
 Argument = TypedDict('Argument',
@@ -115,7 +115,7 @@ ArgumentStore = TypedDict('ArgumentStore',
 
 ProcessState = Literal['checking', 'processing', 'stopping', 'pending']
 UpdateProgress : TypeAlias = Callable[[int], None]
-ProcessStep : TypeAlias = Callable[[str, int, Args], bool]
+ProcessStep : TypeAlias = Callable[[str, int, Arguments], bool]
 
 Content : TypeAlias = Dict[str, Any]
 
@@ -361,7 +361,7 @@ JobStatus = Literal['drafted', 'queued', 'completed', 'failed']
 JobStepStatus = Literal['drafted', 'queued', 'started', 'completed', 'failed']
 JobStep = TypedDict('JobStep',
 {
-	'args' : Args,
+	'arguments' : Arguments,
 	'status' : JobStepStatus
 })
 Job = TypedDict('Job',

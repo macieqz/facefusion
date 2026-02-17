@@ -1,7 +1,7 @@
 from argparse import Action
 from typing import List
 
-from facefusion.types import Args, Argument, ArgumentSet, ArgumentStore, Scope
+from facefusion.types import Argument, ArgumentSet, ArgumentStore, Arguments, Scope
 
 ARGUMENT_STORE : ArgumentStore =\
 {
@@ -23,15 +23,15 @@ def get_sys_set() -> ArgumentSet:
 	return ARGUMENT_STORE.get('sys')
 
 
-def get_api_args() -> List[str]:
+def get_api_arguments() -> List[str]:
 	return list(get_api_set().keys())
 
 
-def get_cli_args() -> List[str]:
+def get_cli_arguments() -> List[str]:
 	return list(get_cli_set().keys())
 
 
-def get_sys_args() -> List[str]:
+def get_sys_arguments() -> List[str]:
 	return list(get_sys_set().keys())
 
 
@@ -54,33 +54,33 @@ def register_arguments(actions : List[Action], scopes : List[Scope]) -> None:
 				ARGUMENT_STORE['sys'][action.dest] = value
 
 
-def filter_api_args(args : Args) -> Args:
-	api_args =\
+def filter_api_arguments(arguments : Arguments) -> Arguments:
+	api_arguments =\
 	{
-		key: args.get(key) for key in args if key in get_api_set() #type:ignore[literal-required]
+		key: arguments.get(key) for key in arguments if key in get_api_set() #type:ignore[literal-required]
 	}
-	return api_args
+	return api_arguments
 
 
-def filter_cli_args(args : Args) -> Args:
-	cli_args =\
+def filter_cli_arguments(arguments : Arguments) -> Arguments:
+	cli_arguments =\
 	{
-		key: args.get(key) for key in args if key in get_cli_args() #type:ignore[literal-required]
+		key: arguments.get(key) for key in arguments if key in get_cli_arguments() #type:ignore[literal-required]
 	}
-	return cli_args
+	return cli_arguments
 
 
-def filter_step_args(args : Args) -> Args:
-	step_args =\
+def filter_step_arguments(arguments : Arguments) -> Arguments:
+	step_arguments =\
 	{
-		key: args.get(key) for key in args if key in get_cli_args() and key not in get_sys_set() #type:ignore[literal-required]
+		key: arguments.get(key) for key in arguments if key in get_cli_arguments() and key not in get_sys_set() #type:ignore[literal-required]
 	}
-	return step_args
+	return step_arguments
 
 
-def filter_sys_args(args : Args) -> Args:
-	sys_args =\
+def filter_sys_arguments(arguments : Arguments) -> Arguments:
+	sys_arguments =\
 	{
-		key: args.get(key) for key in args if key in get_sys_set() #type:ignore[literal-required]
+		key: arguments.get(key) for key in arguments if key in get_sys_set() #type:ignore[literal-required]
 	}
-	return sys_args
+	return sys_arguments

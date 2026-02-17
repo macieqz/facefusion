@@ -21,7 +21,7 @@ from facefusion.processors.modules.expression_restorer.types import ExpressionRe
 from facefusion.processors.types import LivePortraitExpression, LivePortraitFeatureVolume, LivePortraitMotionPoints, LivePortraitPitch, LivePortraitRoll, LivePortraitScale, LivePortraitTranslation, LivePortraitYaw, ProcessorOutputs
 from facefusion.program_helper import find_argument_group
 from facefusion.thread_helper import conditional_thread_semaphore, thread_semaphore
-from facefusion.types import ApplyStateItem, Args, DownloadScope, Face, InferencePool, ModelOptions, ModelSet, ProcessMode, VisionFrame
+from facefusion.types import ApplyStateItem, Arguments, DownloadScope, Face, InferencePool, ModelOptions, ModelSet, ProcessMode, VisionFrame
 from facefusion.vision import read_static_image, read_static_video_frame
 
 
@@ -96,7 +96,7 @@ def get_model_options() -> ModelOptions:
 	return create_static_model_set('full').get(model_name)
 
 
-def register_args(program : ArgumentParser) -> None:
+def register_arguments(program : ArgumentParser) -> None:
 	group_processors = find_argument_group(program, 'processors')
 	if group_processors:
 		facefusion.argument_store.register_arguments(
@@ -128,10 +128,10 @@ def register_args(program : ArgumentParser) -> None:
 		)
 
 
-def apply_args(args : Args, apply_state_item : ApplyStateItem) -> None:
-	apply_state_item('expression_restorer_model', args.get('expression_restorer_model'))
-	apply_state_item('expression_restorer_factor', args.get('expression_restorer_factor'))
-	apply_state_item('expression_restorer_areas', args.get('expression_restorer_areas'))
+def apply_arguments(arguments : Arguments, apply_state_item : ApplyStateItem) -> None:
+	apply_state_item('expression_restorer_model', arguments.get('expression_restorer_model'))
+	apply_state_item('expression_restorer_factor', arguments.get('expression_restorer_factor'))
+	apply_state_item('expression_restorer_areas', arguments.get('expression_restorer_areas'))
 
 
 def pre_check() -> bool:

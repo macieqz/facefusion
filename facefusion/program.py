@@ -723,7 +723,7 @@ def create_processors_program() -> ArgumentParser:
 	)
 
 	for processor_module in get_processors_modules(available_processors):
-		processor_module.register_args(program)
+		processor_module.register_arguments(program)
 
 	return program
 

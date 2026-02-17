@@ -21,7 +21,7 @@ from facefusion.processors.modules.face_editor.types import FaceEditorInputs
 from facefusion.processors.types import LivePortraitExpression, LivePortraitFeatureVolume, LivePortraitMotionPoints, LivePortraitPitch, LivePortraitRoll, LivePortraitRotation, LivePortraitScale, LivePortraitTranslation, LivePortraitYaw, ProcessorOutputs
 from facefusion.program_helper import find_argument_group
 from facefusion.thread_helper import conditional_thread_semaphore, thread_semaphore
-from facefusion.types import ApplyStateItem, Args, DownloadScope, Face, FaceLandmark68, InferencePool, ModelOptions, ModelSet, ProcessMode, VisionFrame
+from facefusion.types import ApplyStateItem, Arguments, DownloadScope, Face, FaceLandmark68, InferencePool, ModelOptions, ModelSet, ProcessMode, VisionFrame
 from facefusion.vision import read_static_image, read_static_video_frame
 
 
@@ -126,7 +126,7 @@ def get_model_options() -> ModelOptions:
 	return create_static_model_set('full').get(model_name)
 
 
-def register_args(program : ArgumentParser) -> None:
+def register_arguments(program : ArgumentParser) -> None:
 	group_processors = find_argument_group(program, 'processors')
 	if group_processors:
 		facefusion.argument_store.register_arguments(
@@ -254,22 +254,22 @@ def register_args(program : ArgumentParser) -> None:
 		)
 
 
-def apply_args(args : Args, apply_state_item : ApplyStateItem) -> None:
-	apply_state_item('face_editor_model', args.get('face_editor_model'))
-	apply_state_item('face_editor_eyebrow_direction', args.get('face_editor_eyebrow_direction'))
-	apply_state_item('face_editor_eye_gaze_horizontal', args.get('face_editor_eye_gaze_horizontal'))
-	apply_state_item('face_editor_eye_gaze_vertical', args.get('face_editor_eye_gaze_vertical'))
-	apply_state_item('face_editor_eye_open_ratio', args.get('face_editor_eye_open_ratio'))
-	apply_state_item('face_editor_lip_open_ratio', args.get('face_editor_lip_open_ratio'))
-	apply_state_item('face_editor_mouth_grim', args.get('face_editor_mouth_grim'))
-	apply_state_item('face_editor_mouth_pout', args.get('face_editor_mouth_pout'))
-	apply_state_item('face_editor_mouth_purse', args.get('face_editor_mouth_purse'))
-	apply_state_item('face_editor_mouth_smile', args.get('face_editor_mouth_smile'))
-	apply_state_item('face_editor_mouth_position_horizontal', args.get('face_editor_mouth_position_horizontal'))
-	apply_state_item('face_editor_mouth_position_vertical', args.get('face_editor_mouth_position_vertical'))
-	apply_state_item('face_editor_head_pitch', args.get('face_editor_head_pitch'))
-	apply_state_item('face_editor_head_yaw', args.get('face_editor_head_yaw'))
-	apply_state_item('face_editor_head_roll', args.get('face_editor_head_roll'))
+def apply_arguments(arguments : Arguments, apply_state_item : ApplyStateItem) -> None:
+	apply_state_item('face_editor_model', arguments.get('face_editor_model'))
+	apply_state_item('face_editor_eyebrow_direction', arguments.get('face_editor_eyebrow_direction'))
+	apply_state_item('face_editor_eye_gaze_horizontal', arguments.get('face_editor_eye_gaze_horizontal'))
+	apply_state_item('face_editor_eye_gaze_vertical', arguments.get('face_editor_eye_gaze_vertical'))
+	apply_state_item('face_editor_eye_open_ratio', arguments.get('face_editor_eye_open_ratio'))
+	apply_state_item('face_editor_lip_open_ratio', arguments.get('face_editor_lip_open_ratio'))
+	apply_state_item('face_editor_mouth_grim', arguments.get('face_editor_mouth_grim'))
+	apply_state_item('face_editor_mouth_pout', arguments.get('face_editor_mouth_pout'))
+	apply_state_item('face_editor_mouth_purse', arguments.get('face_editor_mouth_purse'))
+	apply_state_item('face_editor_mouth_smile', arguments.get('face_editor_mouth_smile'))
+	apply_state_item('face_editor_mouth_position_horizontal', arguments.get('face_editor_mouth_position_horizontal'))
+	apply_state_item('face_editor_mouth_position_vertical', arguments.get('face_editor_mouth_position_vertical'))
+	apply_state_item('face_editor_head_pitch', arguments.get('face_editor_head_pitch'))
+	apply_state_item('face_editor_head_yaw', arguments.get('face_editor_head_yaw'))
+	apply_state_item('face_editor_head_roll', arguments.get('face_editor_head_roll'))
 
 
 def pre_check() -> bool:

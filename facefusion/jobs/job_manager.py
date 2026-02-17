@@ -7,7 +7,7 @@ from facefusion.filesystem import create_directory, get_file_name, is_directory,
 from facefusion.jobs.job_helper import get_step_output_path
 from facefusion.json import read_json, write_json
 from facefusion.time_helper import get_current_date_time
-from facefusion.types import Args, Job, JobSet, JobStatus, JobStep, JobStepStatus
+from facefusion.types import Arguments, Job, JobSet, JobStatus, JobStep, JobStepStatus
 
 JOBS_PATH : Optional[str] = None
 
@@ -111,36 +111,36 @@ def has_step(job_id : str, step_index : int) -> bool:
 	return step_index in range(step_total)
 
 
-def add_step(job_id : str, step_args : Args) -> bool:
+def add_step(job_id : str, step_arguments : Arguments) -> bool:
 	job = read_job_file(job_id)
 
 	if job:
 		job.get('steps').append(
 		{
-			'args': step_args,
+			'arguments': step_arguments,
 			'status': 'drafted'
 		})
 		return update_job_file(job_id, job)
 	return False
 
 
-def remix_step(job_id : str, step_index : int, step_args : Args) -> bool:
+def remix_step(job_id : str, step_index : int, step_arguments : Arguments) -> bool:
 	steps = get_steps(job_id)
-	step_args = copy(step_args)
+	step_arguments = copy(step_arguments)
 
 	if step_index and step_index < 0:
 		step_index = count_step_total(job_id) - 1
 
 	if has_step(job_id, step_index):
-		output_path = steps[step_index].get('args').get('output_path')
-		step_args['target_path'] = get_step_output_path(job_id, step_index, output_path)
-		return add_step(job_id, step_args)
+		output_path = steps[step_index].get('arguments').get('output_path')
+		step_arguments['target_path'] = get_step_output_path(job_id, step_index, output_path)
+		return add_step(job_id, step_arguments)
 	return False
 
 
-def insert_step(job_id : str, step_index : int, step_args : Args) -> bool:
+def insert_step(job_id : str, step_index : int, step_arguments : Arguments) -> bool:
 	job = read_job_file(job_id)
-	step_args = copy(step_args)
+	step_arguments = copy(step_arguments)
 
 	if step_index and step_index < 0:
 		step_index = count_step_total(job_id) - 1
@@ -148,7 +148,7 @@ def insert_step(job_id : str, step_index : int, step_args : Args) -> bool:
 	if job and has_step(job_id, step_index):
 		job.get('steps').insert(step_index,
 		{
-			'args': step_args,
+			'arguments': step_arguments,
 			'status': 'drafted'
 		})
 		return update_job_file(job_id, job)

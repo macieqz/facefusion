@@ -9,7 +9,7 @@ import uvicorn
 
 from facefusion import argument_store, benchmarker, cli_helper, content_analyser, face_classifier, face_detector, face_landmarker, face_masker, face_recognizer, hash_helper, logger, state_manager, translator, voice_extractor
 from facefusion.apis.core import create_api
-from facefusion.args_helper import apply_args
+from facefusion.argument_helper import apply_arguments
 from facefusion.download import conditional_download_hashes, conditional_download_sources
 from facefusion.exit_helper import hard_exit, signal_exit
 from facefusion.filesystem import get_file_extension, has_audio, has_image, has_video
@@ -18,8 +18,8 @@ from facefusion.jobs import job_helper, job_manager, job_runner
 from facefusion.jobs.job_list import compose_job_list
 from facefusion.processors.core import get_processors_modules
 from facefusion.program import create_program
-from facefusion.program_helper import validate_args
-from facefusion.types import Args, ErrorCode, WorkFlow
+from facefusion.program_helper import validate_arguments
+from facefusion.types import Arguments, ErrorCode, WorkFlow
 from facefusion.workflows import audio_to_image, audio_to_image_as_frames, image_to_image, image_to_video, image_to_video_as_frames
 
 
@@ -28,13 +28,13 @@ def cli() -> None:
 		signal.signal(signal.SIGINT, signal_exit)
 		program = create_program()
 
-		if validate_args(program):
-			args = vars(program.parse_args())
-			apply_args(args, state_manager.init_item)
+		if validate_arguments(program):
+			arguments = vars(program.parse_args())
+			apply_arguments(arguments, state_manager.init_item)
 
 			if state_manager.get_item('command'):
 				logger.init(state_manager.get_item('log_level'))
-				route(args)
+				route(arguments)
 			else:
 				program.print_help()
 		else:
@@ -43,7 +43,7 @@ def cli() -> None:
 		hard_exit(2)
 
 
-def route(args : Args) -> None:
+def route(arguments : Arguments) -> None:
 	if state_manager.get_item('command') == 'force-download':
 		error_code = force_download()
 		hard_exit(error_code)
@@ -61,19 +61,19 @@ def route(args : Args) -> None:
 	if state_manager.get_item('command') in [ 'job-list', 'job-create', 'job-submit', 'job-submit-all', 'job-delete', 'job-delete-all', 'job-add-step', 'job-remix-step', 'job-insert-step', 'job-remove-step' ]:
 		if not job_manager.init_jobs(state_manager.get_jobs_path()):
 			hard_exit(1)
-		error_code = route_job_manager(args)
+		error_code = route_job_manager(arguments)
 		hard_exit(error_code)
 
 	if state_manager.get_item('command') == 'run':
 		if not job_manager.init_jobs(state_manager.get_jobs_path()):
 			hard_exit(1)
-		error_code = process_headless(args)
+		error_code = process_headless(arguments)
 		hard_exit(error_code)
 
 	if state_manager.get_item('command') == 'batch-run':
 		if not job_manager.init_jobs(state_manager.get_jobs_path()):
 			hard_exit(1)
-		error_code = process_batch(args)
+		error_code = process_batch(arguments)
 		hard_exit(error_code)
 
 	if state_manager.get_item('command') in [ 'job-run', 'job-run-all', 'job-retry', 'job-retry-all' ]:
@@ -150,7 +150,7 @@ def force_download() -> ErrorCode:
 	return 0
 
 
-def route_job_manager(args : Args) -> ErrorCode:
+def route_job_manager(arguments : Arguments) -> ErrorCode:
 	if state_manager.get_item('command') == 'job-list':
 		job_headers, job_contents = compose_job_list(state_manager.get_item('job_status'))
 
@@ -195,27 +195,27 @@ def route_job_manager(args : Args) -> ErrorCode:
 		return 1
 
 	if state_manager.get_item('command') == 'job-add-step':
-		step_args = argument_store.filter_step_args(args)
+		step_arguments = argument_store.filter_step_arguments(arguments)
 
-		if job_manager.add_step(state_manager.get_item('job_id'), step_args):
+		if job_manager.add_step(state_manager.get_item('job_id'), step_arguments):
 			logger.info(translator.get('job_step_added').format(job_id = state_manager.get_item('job_id')), __name__)
 			return 0
 		logger.error(translator.get('job_step_not_added').format(job_id = state_manager.get_item('job_id')), __name__)
 		return 1
 
 	if state_manager.get_item('command') == 'job-remix-step':
-		step_args = argument_store.filter_step_args(args)
+		step_arguments = argument_store.filter_step_arguments(arguments)
 
-		if job_manager.remix_step(state_manager.get_item('job_id'), state_manager.get_item('step_index'), step_args):
+		if job_manager.remix_step(state_manager.get_item('job_id'), state_manager.get_item('step_index'), step_arguments):
 			logger.info(translator.get('job_remix_step_added').format(job_id = state_manager.get_item('job_id'), step_index = state_manager.get_item('step_index')), __name__)
 			return 0
 		logger.error(translator.get('job_remix_step_not_added').format(job_id = state_manager.get_item('job_id'), step_index = state_manager.get_item('step_index')), __name__)
 		return 1
 
 	if state_manager.get_item('command') == 'job-insert-step':
-		step_args = argument_store.filter_step_args(args)
+		step_arguments = argument_store.filter_step_arguments(arguments)
 
-		if job_manager.insert_step(state_manager.get_item('job_id'), state_manager.get_item('step_index'), step_args):
+		if job_manager.insert_step(state_manager.get_item('job_id'), state_manager.get_item('step_index'), step_arguments):
 			logger.info(translator.get('job_step_inserted').format(job_id = state_manager.get_item('job_id'), step_index = state_manager.get_item('step_index')), __name__)
 			return 0
 		logger.error(translator.get('job_step_not_inserted').format(job_id = state_manager.get_item('job_id'), step_index = state_manager.get_item('step_index')), __name__)
@@ -265,59 +265,59 @@ def route_job_runner() -> ErrorCode:
 	return 2
 
 
-def process_headless(args : Args) -> ErrorCode:
+def process_headless(arguments : Arguments) -> ErrorCode:
 	job_id = job_helper.suggest_job_id('headless')
-	step_args = argument_store.filter_step_args(args)
+	step_arguments = argument_store.filter_step_arguments(arguments)
 
-	if job_manager.create_job(job_id) and job_manager.add_step(job_id, step_args) and job_manager.submit_job(job_id) and job_runner.run_job(job_id, process_step):
+	if job_manager.create_job(job_id) and job_manager.add_step(job_id, step_arguments) and job_manager.submit_job(job_id) and job_runner.run_job(job_id, process_step):
 		return 0
 	return 1
 
 
-def process_batch(args : Args) -> ErrorCode:
+def process_batch(arguments : Arguments) -> ErrorCode:
 	job_id = job_helper.suggest_job_id('batch')
-	step_args = argument_store.filter_step_args(args)
-	source_paths = resolve_file_pattern(step_args.get('source_pattern'))
-	target_paths = resolve_file_pattern(step_args.get('target_pattern'))
+	step_arguments = argument_store.filter_step_arguments(arguments)
+	source_paths = resolve_file_pattern(step_arguments.get('source_pattern'))
+	target_paths = resolve_file_pattern(step_arguments.get('target_pattern'))
 
 	if job_manager.create_job(job_id):
 		if source_paths and target_paths:
 			for index, (source_path, target_path) in enumerate(itertools.product(source_paths, target_paths)):
-				step_args['source_paths'] = [ source_path ]
-				step_args['target_path'] = target_path
+				step_arguments['source_paths'] = [ source_path ]
+				step_arguments['target_path'] = target_path
 
 				try:
-					step_args['output_path'] = step_args.get('output_pattern').format(index = index, source_name = get_file_name(source_path), target_name = get_file_name(target_path), target_extension = get_file_extension(target_path))
+					step_arguments['output_path'] = step_arguments.get('output_pattern').format(index = index, source_name = get_file_name(source_path), target_name = get_file_name(target_path), target_extension = get_file_extension(target_path))
 				except KeyError:
 					return 1
 
-				if not job_manager.add_step(job_id, step_args):
+				if not job_manager.add_step(job_id, step_arguments):
 					return 1
 			if job_manager.submit_job(job_id) and job_runner.run_job(job_id, process_step):
 				return 0
 
 		if not source_paths and target_paths:
 			for index, target_path in enumerate(target_paths):
-				step_args['target_path'] = target_path
+				step_arguments['target_path'] = target_path
 
 				try:
-					step_args['output_path'] = step_args.get('output_pattern').format(index = index, target_name = get_file_name(target_path), target_extension = get_file_extension(target_path))
+					step_arguments['output_path'] = step_arguments.get('output_pattern').format(index = index, target_name = get_file_name(target_path), target_extension = get_file_extension(target_path))
 				except KeyError:
 					return 1
 
-				if not job_manager.add_step(job_id, step_args):
+				if not job_manager.add_step(job_id, step_arguments):
 					return 1
 			if job_manager.submit_job(job_id) and job_runner.run_job(job_id, process_step):
 				return 0
 	return 1
 
 
-def process_step(job_id : str, step_index : int, step_args : Args) -> bool:
+def process_step(job_id : str, step_index : int, step_arguments : Arguments) -> bool:
 	step_total = job_manager.count_step_total(job_id)
-	cli_args = argument_store.filter_cli_args(state_manager.get_state()) #type:ignore[arg-type]
-	args = cli_args.copy()
-	args.update(step_args)
-	apply_args(args, state_manager.set_item)
+	cli_arguments = argument_store.filter_cli_arguments(state_manager.get_state()) #type:ignore[arg-type]
+	arguments = cli_arguments.copy()
+	arguments.update(step_arguments)
+	apply_arguments(arguments, state_manager.set_item)
 
 	logger.info(translator.get('processing_step').format(step_current = step_index + 1, step_total = step_total), __name__)
 	if common_pre_check() and processors_pre_check():

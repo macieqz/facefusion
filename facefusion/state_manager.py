@@ -4,7 +4,7 @@ from typing import Any, Union
 from facefusion.app_context import detect_app_context
 from facefusion.processors.types import ProcessorState, ProcessorStateKey, ProcessorStateSet
 from facefusion.session_context import get_session_id
-from facefusion.types import Args, State, StateKey, StateSet
+from facefusion.types import Arguments, State, StateKey, StateSet
 
 STATE_SET : Union[StateSet, ProcessorStateSet] =\
 {
@@ -18,10 +18,10 @@ def get_state() -> Union[State, ProcessorState]:
 	return STATE_SET.get(app_context) #type:ignore[return-value]
 
 
-def collect_state(args : Args) -> Union[State, ProcessorState]:
+def collect_state(arguments : Arguments) -> Union[State, ProcessorState]:
 	state =\
 	{
-		key: get_item(key) for key in args #type:ignore[arg-type]
+		key: get_item(key) for key in arguments #type:ignore[arg-type]
 	}
 	return state #type:ignore[return-value]
 

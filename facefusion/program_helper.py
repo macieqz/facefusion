@@ -9,12 +9,12 @@ def find_argument_group(program : ArgumentParser, group_name : str) -> Optional[
 	return None
 
 
-def validate_args(program : ArgumentParser) -> bool:
+def validate_arguments(program : ArgumentParser) -> bool:
 	if validate_actions(program):
 		for action in program._actions:
 			if isinstance(action, _SubParsersAction):
 				for _, sub_program in action._name_parser_map.items():
-					if not validate_args(sub_program):
+					if not validate_arguments(sub_program):
 						return False
 		return True
 	return False

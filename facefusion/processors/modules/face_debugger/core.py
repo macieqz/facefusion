@@ -15,7 +15,7 @@ from facefusion.processors.modules.face_debugger import choices as face_debugger
 from facefusion.processors.modules.face_debugger.types import FaceDebuggerInputs
 from facefusion.processors.types import ProcessorOutputs
 from facefusion.program_helper import find_argument_group
-from facefusion.types import ApplyStateItem, Args, Face, InferencePool, ProcessMode, VisionFrame
+from facefusion.types import ApplyStateItem, Arguments, Face, InferencePool, ProcessMode, VisionFrame
 from facefusion.vision import read_static_image, read_static_video_frame
 
 
@@ -27,7 +27,7 @@ def clear_inference_pool() -> None:
 	pass
 
 
-def register_args(program : ArgumentParser) -> None:
+def register_arguments(program : ArgumentParser) -> None:
 	group_processors = find_argument_group(program, 'processors')
 	if group_processors:
 		facefusion.argument_store.register_arguments(
@@ -45,8 +45,8 @@ def register_args(program : ArgumentParser) -> None:
 		)
 
 
-def apply_args(args : Args, apply_state_item : ApplyStateItem) -> None:
-	apply_state_item('face_debugger_items', args.get('face_debugger_items'))
+def apply_arguments(arguments : Arguments, apply_state_item : ApplyStateItem) -> None:
+	apply_state_item('face_debugger_items', arguments.get('face_debugger_items'))
 
 
 def pre_check() -> bool:

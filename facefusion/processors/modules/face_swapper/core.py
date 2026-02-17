@@ -24,7 +24,7 @@ from facefusion.processors.pixel_boost import explode_pixel_boost, implode_pixel
 from facefusion.processors.types import ProcessorOutputs
 from facefusion.program_helper import find_argument_group
 from facefusion.thread_helper import conditional_thread_semaphore
-from facefusion.types import ApplyStateItem, Args, DownloadScope, Embedding, Face, InferencePool, ModelOptions, ModelSet, ProcessMode, VisionFrame
+from facefusion.types import ApplyStateItem, Arguments, DownloadScope, Embedding, Face, InferencePool, ModelOptions, ModelSet, ProcessMode, VisionFrame
 from facefusion.vision import read_static_image, read_static_images, read_static_video_frame, unpack_resolution
 
 
@@ -510,7 +510,7 @@ def get_model_name() -> str:
 	return model_name
 
 
-def register_args(program : ArgumentParser) -> None:
+def register_arguments(program : ArgumentParser) -> None:
 	group_processors = find_argument_group(program, 'processors')
 	if group_processors:
 		facefusion.argument_store.register_arguments(
@@ -546,10 +546,10 @@ def register_args(program : ArgumentParser) -> None:
 		)
 
 
-def apply_args(args : Args, apply_state_item : ApplyStateItem) -> None:
-	apply_state_item('face_swapper_model', args.get('face_swapper_model'))
-	apply_state_item('face_swapper_pixel_boost', args.get('face_swapper_pixel_boost'))
-	apply_state_item('face_swapper_weight', args.get('face_swapper_weight'))
+def apply_arguments(arguments : Arguments, apply_state_item : ApplyStateItem) -> None:
+	apply_state_item('face_swapper_model', arguments.get('face_swapper_model'))
+	apply_state_item('face_swapper_pixel_boost', arguments.get('face_swapper_pixel_boost'))
+	apply_state_item('face_swapper_weight', arguments.get('face_swapper_weight'))
 
 
 def pre_check() -> bool:

@@ -8,8 +8,8 @@ from facefusion.apis.endpoints.session import extract_access_token
 
 
 async def get_state(request : Request) -> JSONResponse:
-	api_args = argument_store.filter_api_args(state_manager.get_state()) #type:ignore[arg-type]
-	return JSONResponse(state_manager.collect_state(api_args), status_code = HTTP_200_OK)
+	api_arguments = argument_store.filter_api_arguments(state_manager.get_state()) #type:ignore[arg-type]
+	return JSONResponse(state_manager.collect_state(api_arguments), status_code = HTTP_200_OK)
 
 
 async def set_state(request : Request) -> JSONResponse:
@@ -23,14 +23,14 @@ async def set_state(request : Request) -> JSONResponse:
 		return await select_target(request)
 
 	body = await request.json()
-	api_args = argument_store.get_api_args()
+	api_arguments = argument_store.get_api_arguments()
 
 	for key, value in body.items():
-		if key in api_args:
+		if key in api_arguments:
 			state_manager.set_item(key, value)
 
-	__api_args__ = argument_store.filter_api_args(state_manager.get_state()) #type:ignore[arg-type]
-	return JSONResponse(state_manager.collect_state(__api_args__), status_code = HTTP_200_OK) #type:ignore[arg-type]
+	__api_arguments__ = argument_store.filter_api_arguments(state_manager.get_state()) #type:ignore[arg-type]
+	return JSONResponse(state_manager.collect_state(__api_arguments__), status_code = HTTP_200_OK) #type:ignore[arg-type]
 
 
 async def select_source(request : Request) -> JSONResponse:
@@ -50,8 +50,8 @@ async def select_source(request : Request) -> JSONResponse:
 
 		state_manager.set_item('source_paths', source_paths)
 
-		__api_args__ = argument_store.filter_api_args(state_manager.get_state()) #type:ignore[arg-type]
-		return JSONResponse(state_manager.collect_state(__api_args__), status_code = HTTP_200_OK)
+		__api_arguments__ = argument_store.filter_api_arguments(state_manager.get_state()) #type:ignore[arg-type]
+		return JSONResponse(state_manager.collect_state(__api_arguments__), status_code = HTTP_200_OK)
 
 	return JSONResponse(
 	{
@@ -71,8 +71,8 @@ async def select_target(request : Request) -> JSONResponse:
 		if asset:
 			state_manager.set_item('target_path', asset.get('path'))
 
-			__api_args__ = argument_store.filter_api_args(state_manager.get_state()) #type:ignore[arg-type]
-			return JSONResponse(state_manager.collect_state(__api_args__), status_code = HTTP_200_OK)
+			__api_arguments__ = argument_store.filter_api_arguments(state_manager.get_state()) #type:ignore[arg-type]
+			return JSONResponse(state_manager.collect_state(__api_arguments__), status_code = HTTP_200_OK)
 
 	return JSONResponse(
 	{

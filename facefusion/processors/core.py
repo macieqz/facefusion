@@ -10,8 +10,8 @@ PROCESSORS_METHODS =\
 [
 	'get_inference_pool',
 	'clear_inference_pool',
-	'register_args',
-	'apply_args',
+	'register_arguments',
+	'apply_arguments',
 	'pre_check',
 	'pre_process',
 	'post_process',

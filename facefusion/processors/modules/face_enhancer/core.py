@@ -18,7 +18,7 @@ from facefusion.processors.modules.face_enhancer.types import FaceEnhancerInputs
 from facefusion.processors.types import ProcessorOutputs
 from facefusion.program_helper import find_argument_group
 from facefusion.thread_helper import thread_semaphore
-from facefusion.types import ApplyStateItem, Args, DownloadScope, Face, InferencePool, ModelOptions, ModelSet, ProcessMode, VisionFrame
+from facefusion.types import ApplyStateItem, Arguments, DownloadScope, Face, InferencePool, ModelOptions, ModelSet, ProcessMode, VisionFrame
 from facefusion.vision import blend_frame, read_static_image, read_static_video_frame
 
 
@@ -289,7 +289,7 @@ def get_model_options() -> ModelOptions:
 	return create_static_model_set('full').get(model_name)
 
 
-def register_args(program : ArgumentParser) -> None:
+def register_arguments(program : ArgumentParser) -> None:
 	group_processors = find_argument_group(program, 'processors')
 	if group_processors:
 		facefusion.argument_store.register_arguments(
@@ -321,10 +321,10 @@ def register_args(program : ArgumentParser) -> None:
 		)
 
 
-def apply_args(args : Args, apply_state_item : ApplyStateItem) -> None:
-	apply_state_item('face_enhancer_model', args.get('face_enhancer_model'))
-	apply_state_item('face_enhancer_blend', args.get('face_enhancer_blend'))
-	apply_state_item('face_enhancer_weight', args.get('face_enhancer_weight'))
+def apply_arguments(arguments : Arguments, apply_state_item : ApplyStateItem) -> None:
+	apply_state_item('face_enhancer_model', arguments.get('face_enhancer_model'))
+	apply_state_item('face_enhancer_blend', arguments.get('face_enhancer_blend'))
+	apply_state_item('face_enhancer_weight', arguments.get('face_enhancer_weight'))
 
 
 def pre_check() -> bool:

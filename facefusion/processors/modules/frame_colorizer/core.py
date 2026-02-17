@@ -17,7 +17,7 @@ from facefusion.processors.modules.frame_colorizer.types import FrameColorizerIn
 from facefusion.processors.types import ProcessorOutputs
 from facefusion.program_helper import find_argument_group
 from facefusion.thread_helper import thread_semaphore
-from facefusion.types import ApplyStateItem, Args, DownloadScope, ExecutionProvider, InferencePool, ModelOptions, ModelSet, ProcessMode, VisionFrame
+from facefusion.types import ApplyStateItem, Arguments, DownloadScope, ExecutionProvider, InferencePool, ModelOptions, ModelSet, ProcessMode, VisionFrame
 from facefusion.vision import blend_frame, read_static_image, read_static_video_frame, unpack_resolution
 
 
@@ -181,7 +181,7 @@ def get_model_options() -> ModelOptions:
 	return create_static_model_set('full').get(model_name)
 
 
-def register_args(program : ArgumentParser) -> None:
+def register_arguments(program : ArgumentParser) -> None:
 	group_processors = find_argument_group(program, 'processors')
 	if group_processors:
 		facefusion.argument_store.register_arguments(
@@ -212,10 +212,10 @@ def register_args(program : ArgumentParser) -> None:
 		)
 
 
-def apply_args(args : Args, apply_state_item : ApplyStateItem) -> None:
-	apply_state_item('frame_colorizer_model', args.get('frame_colorizer_model'))
-	apply_state_item('frame_colorizer_blend', args.get('frame_colorizer_blend'))
-	apply_state_item('frame_colorizer_size', args.get('frame_colorizer_size'))
+def apply_arguments(arguments : Arguments, apply_state_item : ApplyStateItem) -> None:
+	apply_state_item('frame_colorizer_model', arguments.get('frame_colorizer_model'))
+	apply_state_item('frame_colorizer_blend', arguments.get('frame_colorizer_blend'))
+	apply_state_item('frame_colorizer_size', arguments.get('frame_colorizer_size'))
 
 
 def pre_check() -> bool:

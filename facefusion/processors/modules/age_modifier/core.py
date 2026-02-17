@@ -21,7 +21,7 @@ from facefusion.processors.modules.age_modifier.types import AgeModifierDirectio
 from facefusion.processors.types import ProcessorOutputs
 from facefusion.program_helper import find_argument_group
 from facefusion.thread_helper import thread_semaphore
-from facefusion.types import ApplyStateItem, Args, DownloadScope, Face, InferencePool, ModelOptions, ModelSet, ProcessMode, VisionFrame
+from facefusion.types import ApplyStateItem, Arguments, DownloadScope, Face, InferencePool, ModelOptions, ModelSet, ProcessMode, VisionFrame
 from facefusion.vision import match_frame_color, read_static_image, read_static_video_frame
 
 
@@ -84,7 +84,7 @@ def get_model_options() -> ModelOptions:
 	return create_static_model_set('full').get(model_name)
 
 
-def register_args(program : ArgumentParser) -> None:
+def register_arguments(program : ArgumentParser) -> None:
 	group_processors = find_argument_group(program, 'processors')
 	if group_processors:
 		facefusion.argument_store.register_arguments(
@@ -108,9 +108,9 @@ def register_args(program : ArgumentParser) -> None:
 		)
 
 
-def apply_args(args : Args, apply_state_item : ApplyStateItem) -> None:
-	apply_state_item('age_modifier_model', args.get('age_modifier_model'))
-	apply_state_item('age_modifier_direction', args.get('age_modifier_direction'))
+def apply_arguments(arguments : Arguments, apply_state_item : ApplyStateItem) -> None:
+	apply_state_item('age_modifier_model', arguments.get('age_modifier_model'))
+	apply_state_item('age_modifier_direction', arguments.get('age_modifier_direction'))
 
 
 def pre_check() -> bool:
