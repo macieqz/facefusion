@@ -1,6 +1,6 @@
 from collections import namedtuple
 from datetime import datetime
-from typing import Any, Callable, Dict, List, Literal, Optional, Tuple, TypeAlias, TypedDict
+from typing import Any, Callable, Dict, List, Literal, NotRequired, Optional, Tuple, TypeAlias, TypedDict, Union
 
 import cv2
 import numpy
@@ -99,11 +99,12 @@ Resolution : TypeAlias = Tuple[int, int]
 
 Args : TypeAlias = Dict[str, Any]
 Scope : TypeAlias = Literal['api', 'cli', 'sys']
+Choice : TypeAlias = Union[str, int, float]
 Argument = TypedDict('Argument',
 {
 	'default' : Any,
-	'choices' : List[Any]
-}, total = False)
+	'choices' : NotRequired[List[Choice]]
+})
 ArgumentSet : TypeAlias = Dict[str, Argument]
 ArgumentStore = TypedDict('ArgumentStore',
 {
