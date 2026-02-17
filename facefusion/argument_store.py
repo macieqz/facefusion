@@ -1,10 +1,9 @@
 from argparse import Action
 from typing import List
 
-from facefusion.types import Args, ArgsStore, Scope
+from facefusion.types import Args, Argument, ArgumentSet, ArgumentStore, Scope
 
-
-ARGS_STORE : ArgsStore =\
+ARGUMENT_STORE : ArgumentStore =\
 {
 	'api': {},
 	'cli': {},
@@ -12,16 +11,16 @@ ARGS_STORE : ArgsStore =\
 }
 
 
-def get_api_set() -> Args:
-	return ARGS_STORE.get('api')
+def get_api_set() -> ArgumentSet:
+	return ARGUMENT_STORE.get('api')
 
 
-def get_cli_set() -> Args:
-	return ARGS_STORE.get('cli')
+def get_cli_set() -> ArgumentSet:
+	return ARGUMENT_STORE.get('cli')
 
 
-def get_sys_set() -> Args:
-	return ARGS_STORE.get('sys')
+def get_sys_set() -> ArgumentSet:
+	return ARGUMENT_STORE.get('sys')
 
 
 def get_api_args() -> List[str]:
@@ -38,7 +37,7 @@ def get_sys_args() -> List[str]:
 
 def register_arguments(actions : List[Action], scopes : List[Scope]) -> None:
 	for action in actions:
-		value =\
+		value : Argument =\
 		{
 			'default': action.default
 		}
@@ -48,11 +47,11 @@ def register_arguments(actions : List[Action], scopes : List[Scope]) -> None:
 
 		for scope in scopes:
 			if scope == 'api':
-				ARGS_STORE['api'][action.dest] = value
+				ARGUMENT_STORE['api'][action.dest] = value
 			if scope == 'cli':
-				ARGS_STORE['cli'][action.dest] = value
+				ARGUMENT_STORE['cli'][action.dest] = value
 			if scope == 'sys':
-				ARGS_STORE['sys'][action.dest] = value
+				ARGUMENT_STORE['sys'][action.dest] = value
 
 
 def filter_api_args(args : Args) -> Args:

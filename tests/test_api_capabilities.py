@@ -4,14 +4,14 @@ from typing import Iterator
 import pytest
 from starlette.testclient import TestClient
 
-from facefusion import args_store, session_manager
+from facefusion import argument_store, session_manager
 from facefusion.apis.core import create_api
 
 
 @pytest.fixture(scope = 'module')
 def test_client() -> Iterator[TestClient]:
 	program = ArgumentParser()
-	args_store.register_arguments(
+	argument_store.register_arguments(
 		[
 			program.add_argument(
 				'--source-paths',
@@ -20,7 +20,7 @@ def test_client() -> Iterator[TestClient]:
 		],
 		scopes = [ 'api' ]
 	)
-	args_store.register_arguments(
+	argument_store.register_arguments(
 		[
 			program.add_argument(
 				'--output-format',
